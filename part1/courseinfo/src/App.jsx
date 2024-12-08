@@ -7,23 +7,23 @@ function Header({course}) {
 
 function Content({part1, ex1, part2, ex2, part3, ex3}) {
     return (
-        <>
-            <p>
-                {part1} {ex1}
-            </p>
-            <p>
-                {part2} {ex2}
-            </p>
-            <p>
-                {part3} {ex3}
-            </p>
-        </>
+        <div>
+            <Part part={part1} ex={ex1} />
+            <Part part={part2} ex={ex2} />
+            <Part part={part3} ex={ex3} />
+        </div>
     )
 }
 
 function Total({total}) {
     return (
         <p>Number of exercises {total}</p>
+    )
+}
+
+function Part({part, ex}) {
+    return (
+        <p>{part} {ex} </p>
     )
 }
 

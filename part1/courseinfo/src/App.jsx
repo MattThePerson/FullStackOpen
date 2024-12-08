@@ -1,23 +1,23 @@
 
 function Header({ course }) {
     return (
-        <h1>{course}</h1>
+        <h1>{course.name}</h1>
     )
 }
 
-function Content({ parts }) {
-    console.log(parts);
+function Content({ course }) {
+    console.log(course.parts);
     // list needs unique 'key', component won't recieve key as prop
     return (
         <div>
-            {parts.map(part => <Part key={part.name} part={part} />)}
+            {course.parts.map(part => <Part key={part.name} part={part} />)}
         </div>
     )
 }
 
-function Total({ parts }) {
+function Total({ course }) {
     let total = 0;
-    parts.forEach(pt => total += pt.exercises);
+    course.parts.forEach(pt => total += pt.exercises);
     return (
         <p>Number of exercises {total}</p>
     )
@@ -30,27 +30,29 @@ function Part({ part }) {
 }
 
 const App = () => {
-    const course = 'Half Stack application development'
-    const parts = [
-        {
-            name: 'Fundamentals of React',
-            exercises: 10
-        },
-        {
-            name: 'Using props to pass data',
-            exercises: 7
-        },
-        {
-            name: 'State of a component',
-            exercises: 14
-        }
-    ]
+    const course = {
+        name: 'Half Stack application development',
+        parts: [
+            {
+                name: 'Fundamentals of React',
+                exercises: 10
+            },
+            {
+                name: 'Using props to pass data',
+                exercises: 7
+            },
+            {
+                name: 'State of a component',
+                exercises: 14
+            }
+        ]
+    }
 
     return (
         <div>
             <Header course={course} />
-            <Content parts={parts}/>
-            <Total parts={parts} />
+            <Content course={course} />
+            <Total course={course} />
         </div>
     )
 }

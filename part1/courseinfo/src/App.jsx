@@ -1,29 +1,29 @@
 
 function Header({ course }) {
     return (
-        <h1>{course}</h1>
+        <h1>{course} </h1>
     )
 }
 
-function Content({ part1, ex1, part2, ex2, part3, ex3 }) {
+function Content({ part1, part2, part3 }) {
     return (
         <div>
-            <Part part={part1} ex={ex1} />
-            <Part part={part2} ex={ex2} />
-            <Part part={part3} ex={ex3} />
+            <Part name={part1.name} exercises={part1.exercises} />
+            <Part name={part2.name} exercises={part2.exercises} />
+            <Part name={part3.name} exercises={part3.exercises} />
         </div>
     )
 }
 
 function Total({ total }) {
     return (
-        <p>Number of exercises {total}</p>
+        <p>Number of exercises {total} </p>
     )
 }
 
-function Part({ part, ex }) {
+function Part({ name, exercises }) {
     return (
-        <p>{part} {ex} </p>
+        <p>{name} {exercises} </p>
     )
 }
 
@@ -41,16 +41,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14
     }
-    const exercises3 = 14
 
     return (
         <div>
             <Header course={course} />
-            <Content
-                part1={part1.name} ex1={part1.exercises}
-                part2={part2.name} ex2={part2.exercises}
-                part3={part3.name} ex3={part3.exercises}
-            />
+            <Content part1={part1} part2={part2} part3={part3} />
             <Total total={part1.exercises + part2.exercises + part3.exercises} />
         </div>
     )

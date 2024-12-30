@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 
 function Button({type, onClick}) {
-  console.log(`Clicked "${type}" Button`)
+  // console.log(`Clicked "${type}" Button`)
   return (
     <button onClick={onClick}>{type}</button>
   )
@@ -22,19 +22,34 @@ function Statistics({good, neutral, bad}) {
   return (
     <div>
       <h2>Statistics</h2>
-      <div>good {good}</div>
-      <div>neutral {neutral}</div>
-      <div>bad {bad}</div>
-      <div>average {(good - bad) / (good + neutral + bad)}</div>
-      <div>positive {good / (good + neutral + bad)} %</div>
+      <table>
+        <tr>
+          <td>good</td>
+          <td>{good}</td>
+        </tr>
+        <tr>
+          <td>neutral</td>
+          <td>{neutral}</td>
+        </tr>
+        <tr>
+          <td>bad</td>
+          <td>{bad}</td>
+        </tr>
+        <tr>
+          <td>average</td>
+          <td>{(good - bad) / (good + neutral + bad)}</td>
+        </tr>
+        <tr>
+          <td>positive</td>
+          <td>{good / (good + neutral + bad)} %</td>
+        </tr>
+      </table>
     </div>
   )
 }
 
 const App = () => {
-  // save clicks of each button to its own state
-
-  console.log('Initialized App');
+  // console.log('Initialized App');
   
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)

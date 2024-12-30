@@ -12,7 +12,12 @@ const App = () => {
         'The only way to go fast, is to go well.'
     ]
 
-    const [selected, setSelected] = useState(0)
+    const [selected, setSelected] = useState(0);
+    const points_init = {};
+    for (let i = 0; i < anecdotes.length; i++) {
+        points_init[i] = 0;
+    }
+    const [points, setPoints] = useState(points_init);
 
     function setRandomAnecdote() {
         let next_selected = selected;
@@ -21,12 +26,28 @@ const App = () => {
         setSelected(next_selected);
     }
 
+    function voteForSelected() {
+        const new_points = { ...points };
+        new_points[selected] += 1;
+        console.log(new_points);
+        setPoints(new_points);
+    }
+
+    function getAnecdoteWithMostVotes() {
+        return Object.keys(points).reduce((a, b) => (points[a] > points[b] ? a : b));
+    }
+    
     return (
         <div>
+            <h2>Anecdote of the day ({points[selected]} votes) </h2>
             <div>
                 {anecdotes[selected]}
             </div>
+            <button onClick={voteForSelected}>vote</button>
             <button onClick={setRandomAnecdote}>next anecdote</button>
+
+            <h2>Anecdote with most votes ({points[getAnecdoteWithMostVotes()]} votes) </h2>
+            <div>{anecdotes[getAnecdoteWithMostVotes()]}</div>
         </div>
     )
 }

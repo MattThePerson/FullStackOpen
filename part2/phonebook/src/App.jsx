@@ -11,8 +11,14 @@ const App = () => {
     // handleFormSubmit
     const handleFormSubmit = e => {
         e.preventDefault();
-        console.log("SUBMITTING", newName);
-        setPersons([...persons, {name: newName}]);
+        const newObj = {name: newName};
+
+        if (persons.find(x => JSON.stringify(x) === JSON.stringify(newObj))) { // assumes attributes are ordered same
+            alert(`User already exists with name: ${newObj.name}`);
+            return;
+        }
+        
+        setPersons(persons.concat(newObj));
         setNewName('');
     }
     

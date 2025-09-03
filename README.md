@@ -1,7 +1,9 @@
 # Full Stack Open 2024-2025
+
 By Matt Stirling
 
-**Course page:** https://fullstackopen.com/en/#course-contents
+[course page](https://fullstackopen.com/en/#course-contents)
+
 
 ## NOTES
 
@@ -14,10 +16,7 @@ npm install
 npm run dev
 ```
 
-New comment from Linux Mint!
 
-
-#### Part 1
 
 
 

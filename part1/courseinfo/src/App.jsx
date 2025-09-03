@@ -17,10 +17,13 @@ function Content({ course }) {
 }
 
 function Total({ course }) {
-    let total = 0;
-    course.parts.forEach(pt => total += pt.exercises);
+    const total = course.parts.reduce((acc, curr, idx) => {
+        if (acc.exercises) acc = acc.exercises;
+        // console.log(idx, acc, curr.exercises);
+        return acc + curr.exercises;
+    });
     return (
-        <p>Number of exercises {total}</p>
+        <strong><p>Number of exercises {total}</p></strong>
     )
 }
 
@@ -31,7 +34,7 @@ function Part({ part }) {
 }
 
 function Course({course}) {
-    console.log("Rendering course ...");
+    console.log("rendering course");
     return (
         <div>
             <Header course={course} />

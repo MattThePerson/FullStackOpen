@@ -6,11 +6,12 @@ function Header({ course }) {
 }
 
 function Content({ course }) {
-    console.log(course.parts);
     // list needs unique 'key', component won't recieve key as prop
     return (
         <div>
-            {course.parts.map(part => <Part key={part.name} part={part} />)}
+            {course.parts.map(part =>
+                <Part key={part.name} part={part} />
+            )}
         </div>
     )
 }
@@ -26,6 +27,17 @@ function Total({ course }) {
 function Part({ part }) {
     return (
         <p>{part.name} {part.exercises} </p>
+    )
+}
+
+function Course({course}) {
+    console.log("Rendering course ...");
+    return (
+        <div>
+            <Header course={course} />
+            <Content course={course} />
+            <Total course={course} />
+        </div>
     )
 }
 
@@ -49,11 +61,7 @@ const App = () => {
     }
 
     return (
-        <div>
-            <Header course={course} />
-            <Content course={course} />
-            <Total course={course} />
-        </div>
+        <Course course={course} />
     )
 }
 

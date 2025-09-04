@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import ContactsList from './components/ContactsList';
+import ContactAdderForm from './components/ContactAdderForm';
+import ContactFilter from './components/ContactFilter';
+
 
 // isProbablyAPhoneNumber
 function isProbablyAPhoneNumber(x) {
@@ -28,6 +32,7 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
     const [nameFilter, setNameFilter] = useState('')
 
+
     // handleFormSubmit
     const handleFormSubmit = e => {
         e.preventDefault();
@@ -52,53 +57,35 @@ const App = () => {
         setNewNumber('');
     }
 
+
     // filter contacts
     const personsToShow = filterContacts(persons, nameFilter);
-    
+
+
     // JSX
     return (
         <div>
 
-            {/* <div>debug: {nameFilter}</div> */}
-            
             <h1>Phonebook</h1>
 
-            {/* search */}
-            <div>Filter names:
-                <input
-                    value={nameFilter}
-                    onChange={e => setNameFilter(e.target.value)}
-                />
-            </div>
+            <ContactFilter
+                nameFilter={nameFilter}
+                setNameFilter={setNameFilter}
+            />
 
-            {/* forms */}
             <h2>Add new contact</h2>
-            <form onSubmit={handleFormSubmit}>
-                <div>
-                    name: <input
-                        value={newName}
-                        onChange={(e) => {setNewName(e.target.value)}}
-                    />
-                </div>
-                <div>
-                    number: <input
-                        value={newNumber}
-                        onChange={(e) => {setNewNumber(e.target.value)}}
-                    />
-                </div>
-                <div>
-                    <button type="submit">add</button>
-                </div>
-            </form>
+            <ContactAdderForm
+                newName={newName}
+                newNumber={newNumber}
+                setNewName={setNewName}
+                setNewNumber={setNewNumber}
+                handleFormSubmit={handleFormSubmit}
+            />
 
-            {/* numbers */}
             <h2>Contacts</h2>
-            {personsToShow.map((p) => 
-                <div key={p.name}>
-                    {p.name} {p.number}
-                </div>
-            )}
-
+            <ContactsList
+                personsToShow={personsToShow}
+            />
             
         </div>
     )

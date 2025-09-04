@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios';
+
 import ContactsList from './components/ContactsList';
 import ContactAdderForm from './components/ContactAdderForm';
 import ContactFilter from './components/ContactFilter';
+
 
 
 // isProbablyAPhoneNumber
 function isProbablyAPhoneNumber(x) {
     return !isNaN(x.replaceAll('-', ''))
 }
+
 
 // filterContacts
 function filterContacts(contacts, filter) {
@@ -17,24 +21,31 @@ function filterContacts(contacts, filter) {
     );
 }
 
+
 // App
 const App = () => {
 
     // State
-    const [persons, setPersons] = useState([
-        { id: 0, name: 'Matti Mustonen', number: "045-1234" },
-        { id: 1, name: 'Arto Hellas', number: '040-123456'},
-        { id: 2, name: 'Ada Lovelace', number: '39-44-5323523'},
-        { id: 3, name: 'Dan Abramov', number: '12-43-234345'},
-        { id: 4, name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ])
-    const [newName, setNewName] = useState('')
-    const [newNumber, setNewNumber] = useState('')
-    const [nameFilter, setNameFilter] = useState('')
+    const [persons, setPersons] = useState([]);
+    const [newName, setNewName] = useState('');
+    const [newNumber, setNewNumber] = useState('');
+    const [nameFilter, setNameFilter] = useState('');
 
 
+    // fetch persons from server
+    useEffect(() => {
+        axios
+            .get("http://localhost:3001/persons")
+            .then(resp => {
+                console.log("response from server");
+                setPersons(resp.data);
+            })
+    }, [])
+    console.log(`amount of persons ${persons.length}`);
+
+    
     // handleFormSubmit
-    const handleFormSubmit = e => {
+    const handleFormSubmit = (e) => {
         e.preventDefault();
 
         if (persons.find(x => x.name.toLowerCase() === newName.toLowerCase())) { // assumes attributes are ordered same
@@ -48,7 +59,7 @@ const App = () => {
         }
         
         const newObj = {
-            id: persons.length,
+            id: persons.length+1,
             name: newName,
             number: newNumber,
         };

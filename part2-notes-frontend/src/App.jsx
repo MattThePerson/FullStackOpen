@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import Note from './components/Note'
+import noteService from './services/notes.js'
 
+
+// App
 const App = () => {
 
     // state
@@ -11,28 +14,54 @@ const App = () => {
 
     // effect
     useEffect(() => {
-        axios
-            .get("http://localhost:3001/notes")
-            .then(resp => {
-                console.log("promise fullfilled");
-                setNotes(resp.data);
+        noteService
+            .getAll()
+            .then(initialNotes => {
+                console.log("got notes from backend");
+                setNotes(initialNotes);
             })
     }, []);
-    console.log(`render ${notes.length} notes`);
+    console.debug(`rendering ${notes.length} notes`);
 
+    
+    // toggleImportanceOf
+    const toggleImportanceOf = (id) => {
+        console.log('importance of ' + id + ' needs to be toggled');
+
+        const note = notes.find(n => n.id === id);
+        const updatedNote = { ...note, important: !note.important };
+
+        // axios.put(url, updatedNote)
+        noteService.update(id, updatedNote)
+            .then(returnedNote => {
+                setNotes(notes.map(n => (n.id === id) ? returnedNote : n));
+            })
+            .catch(err => {
+                alert(`the note '${note.content}' was already deleted from server`);
+                setNotes(notes.filter(n => n.id !== id))
+            })            
+    }
+
+    
     // onSubmit
     const onSubmit = (e) => {
         e.preventDefault();
         const noteObject = {
             content: newNote,
             important: Math.random() < 0.5,
-            id: String(notes.length + 1),
         }
-        console.log("SUBMITTING NOTE:", e.target.querySelector("input").value);
-        setNotes(notes.concat(noteObject));
-        setNewNote("");
+
+        // post to backend
+        noteService
+            .create(noteObject)
+            .then(returnedNote => {
+                console.debug("setting new note:", returnedNote);
+                setNotes(notes.concat(returnedNote));
+                setNewNote("");
+                })
     }
 
+    
     // handleInputValueChange
     const handleInputValueChange = (e) => {
         console.log(e.target.value);
@@ -57,7 +86,7 @@ const App = () => {
             </div>
             <ul>
                 {notesToShow.map(note =>
-                    <Note key={note.id} note={note} />
+                    <Note key={note.id} note={note} toggleImportance={toggleImportanceOf} />
                 )}
             </ul>
 

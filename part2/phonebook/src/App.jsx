@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios';
 
 import ContactsList from './components/ContactsList';
 import ContactAdderForm from './components/ContactAdderForm';
 import ContactFilter from './components/ContactFilter';
 
+import personsService from './services/persons';
 
 
 // isProbablyAPhoneNumber
 function isProbablyAPhoneNumber(x) {
-    return !isNaN(x.replaceAll('-', ''))
+    return !isNaN(x.replaceAll('-', '')) && x !== "";
 }
 
 
@@ -32,16 +32,16 @@ const App = () => {
     const [nameFilter, setNameFilter] = useState('');
 
 
-    // fetch persons from server
+    // fetch initial persons
     useEffect(() => {
-        axios
-            .get("http://localhost:3001/persons")
-            .then(resp => {
-                console.log("response from server");
-                setPersons(resp.data);
+        personsService
+            .getAll()
+            .then(initialPersons => {
+                console.debug("fetched initial persons");
+                setPersons(initialPersons);
             })
     }, [])
-    console.log(`amount of persons ${persons.length}`);
+    console.debug(`amount of persons ${persons.length}`);
 
     
     // handleFormSubmit
@@ -54,18 +54,23 @@ const App = () => {
         }
 
         if (!isProbablyAPhoneNumber(newNumber)) {
-            alert(`'${newNumber}' is not a valid phone number`)
+            alert(`\"${newNumber}\" is not a valid phone number`)
             return;
         }
         
+        // add new person
         const newObj = {
-            id: persons.length+1,
             name: newName,
             number: newNumber,
         };
-        setPersons(persons.concat(newObj));
-        setNewName('');
-        setNewNumber('');
+        personsService
+            .create(newObj)
+            .then(returnedPerson => {
+                console.log(returnedPerson);
+                setPersons(persons.concat(returnedPerson))
+                setNewName('');
+                setNewNumber('');
+            })
     }
 
 

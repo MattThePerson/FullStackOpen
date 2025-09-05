@@ -25,14 +25,13 @@ function filterContacts(contacts, filter) {
 // App
 const App = () => {
 
-    // State
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [nameFilter, setNameFilter] = useState('');
 
 
-    // fetch initial persons
+    /* fetch initial persons */
     useEffect(() => {
         personsService
             .getAll()
@@ -44,7 +43,7 @@ const App = () => {
     console.debug(`amount of persons ${persons.length}`);
 
     
-    // handleFormSubmit
+    /* handleFormSubmit */
     const handleFormSubmit = (e) => {
         e.preventDefault();
 
@@ -58,11 +57,11 @@ const App = () => {
             return;
         }
         
-        // add new person
         const newObj = {
             name: newName,
             number: newNumber,
         };
+
         personsService
             .create(newObj)
             .then(returnedPerson => {
@@ -73,12 +72,29 @@ const App = () => {
             })
     }
 
+    
+    /* deleteContact */
+    const deleteContact = (id) => {
+        const person = persons.find(p => p.id === id);
+
+        if (!window.confirm(`Delete contact "${person.name}" with id: ${id}?`)) {
+            console.debug("not deleting contact");
+            return
+        }
+        
+        personsService
+            .deletePerson(id)
+            .then(() => {
+                setPersons(persons.filter(p => p.id !== id));
+            })
+    }
+    
 
     // filter contacts
     const personsToShow = filterContacts(persons, nameFilter);
 
 
-    // JSX
+    /* JSX */
     return (
         <div>
 
@@ -101,6 +117,7 @@ const App = () => {
             <h2>Contacts</h2>
             <ContactsList
                 personsToShow={personsToShow}
+                deleteContactFunc={deleteContact}
             />
             
         </div>

@@ -13,15 +13,6 @@ function isProbablyAPhoneNumber(x) {
 }
 
 
-// filterContacts
-function filterContacts(contacts, filter) {
-    const filter_lc = filter.toLowerCase();
-    return contacts.filter(c => 
-        c.name.toLowerCase().includes(filter_lc)
-    );
-}
-
-
 // App
 const App = () => {
 
@@ -43,29 +34,37 @@ const App = () => {
     console.debug(`amount of persons ${persons.length}`);
 
     
-    /* handleFormSubmit */
+    // handleFormSubmit
     const handleFormSubmit = (e) => {
         e.preventDefault();
 
-        if (persons.find(x => x.name.toLowerCase() === newName.toLowerCase())) { // assumes attributes are ordered same
-            alert(`User already exists with name: ${newName}`);
-            return;
-        }
-
         if (!isProbablyAPhoneNumber(newNumber)) {
-            alert(`\"${newNumber}\" is not a valid phone number`)
+            alert(`\"${newNumber}\" is not a valid phone number`);
             return;
         }
         
-        const newObj = {
+        const personObj = {
             name: newName,
             number: newNumber,
         };
+        
+        // update phone number
+        const existingPerson = persons.find(x => x.name.toLowerCase() === newName.toLowerCase());
+        if (existingPerson) {
+            if (window.confirm(`${newName} already exists in the phonebook (id: ${existingPerson.id}). Update phonenumber to: ${newNumber}?`)) {
+                personsService
+                    .update(existingPerson.id, personObj)
+                    .then(returnedPerson => {
+                        setPersons(persons.map(p => (p.id === returnedPerson.id) ? returnedPerson : p))
+                    })
+            }
+            return;
+        }
 
+        // add new contact
         personsService
-            .create(newObj)
+            .create(personObj)
             .then(returnedPerson => {
-                console.log(returnedPerson);
                 setPersons(persons.concat(returnedPerson))
                 setNewName('');
                 setNewNumber('');
@@ -73,7 +72,7 @@ const App = () => {
     }
 
     
-    /* deleteContact */
+    // deleteContact
     const deleteContact = (id) => {
         const person = persons.find(p => p.id === id);
 
@@ -90,8 +89,10 @@ const App = () => {
     }
     
 
-    // filter contacts
-    const personsToShow = filterContacts(persons, nameFilter);
+    /* filter contacts */
+    const personsToShow = persons.filter(c => 
+        c.name.toLowerCase().includes(nameFilter.toLowerCase())
+    );
 
 
     /* JSX */

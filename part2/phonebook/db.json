@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "1234",
+      "number": "45-123-6801",
       "id": "1"
     },
     {
@@ -16,19 +16,9 @@
       "id": "3"
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": "4"
-    },
-    {
-      "name": "another test",
-      "number": "69-420",
-      "id": "f251"
-    },
-    {
-      "id": "bb56",
-      "name": "New person",
-      "number": "918273"
+      "id": "0221",
+      "name": "New Person",
+      "number": "51-4600"
     }
   ]
 }

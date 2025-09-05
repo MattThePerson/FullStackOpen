@@ -1,16 +1,30 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios';
-import Note from './components/Note'
 import noteService from './services/notes.js'
 
+import Note from './components/Note'
+import Footer from './components/Footer.jsx'
+
+
+// Notification
+const Notification = ({ message }) => {
+    if (message === null) {
+        return null
+    }
+
+    return (
+        <div className='error'>
+            {message}
+        </div>
+    )
+}
 
 // App
 const App = () => {
 
-    // state
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState("note placeholder..");
     const [showAll, setShowAll] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null)
 
     // effect
     useEffect(() => {
@@ -23,7 +37,7 @@ const App = () => {
     }, []);
     console.debug(`rendering ${notes.length} notes`);
 
-    
+
     // toggleImportanceOf
     const toggleImportanceOf = (id) => {
         console.log('importance of ' + id + ' needs to be toggled');
@@ -37,12 +51,17 @@ const App = () => {
                 setNotes(notes.map(n => (n.id === id) ? returnedNote : n));
             })
             .catch(err => {
-                alert(`the note '${note.content}' was already deleted from server`);
+                setErrorMessage(
+                    `Note '${note.content}' was already removed from server`
+                )
+                setTimeout(() => {
+                    setErrorMessage(null)
+                }, 2000)
                 setNotes(notes.filter(n => n.id !== id))
-            })            
+            })
     }
 
-    
+
     // onSubmit
     const onSubmit = (e) => {
         e.preventDefault();
@@ -58,10 +77,10 @@ const App = () => {
                 console.debug("setting new note:", returnedNote);
                 setNotes(notes.concat(returnedNote));
                 setNewNote("");
-                })
+            })
     }
 
-    
+
     // handleInputValueChange
     const handleInputValueChange = (e) => {
         console.log(e.target.value);
@@ -78,7 +97,7 @@ const App = () => {
         <div>
 
             <h1>Notes</h1>
-
+            <Notification message={errorMessage} />
             <div>
                 <button onClick={() => setShowAll(!showAll)}>
                     show {showAll ? "important" : "all"}
@@ -90,6 +109,7 @@ const App = () => {
                 )}
             </ul>
 
+            {/* new note form */}
             <form onSubmit={onSubmit}>
                 <input
                     value={newNote}
@@ -97,6 +117,8 @@ const App = () => {
                 />
                 <button type="submit">save</button>
             </form>
+
+            <Footer />
 
         </div>
     )

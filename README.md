@@ -2,23 +2,17 @@
 
 By Matt Stirling
 
-[course page](https://fullstackopen.com/en/#course-contents)
+- [course page](https://fullstackopen.com/en/#course-contents)
+- contact: `matti.luukkainen@helsinki.fi`
 
+## About the course
 
-## NOTES
+[completion](https://fullstackopen.com/en/part0/general_info#parts-and-completion)
+[general info](https://fullstackopen.com/en/part0/general_info)
 
-#### Init new React project with vite
+Base course is (parts 0-5) Full Stack Web Development (5 cr, CSM1410819)
 
-```
-npm create vite@latest introdemo -- --template react
-cd introdemo
-npm install
-npm run dev
-```
-
-
-
-
+To get credits you must pass the exam (which does not count towards your grade).
 
 ## Progress (for myself)
 

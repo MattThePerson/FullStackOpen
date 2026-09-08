@@ -17,14 +17,33 @@ async function getAllCountries() {
     return names;
 }
 
-function App() {
+// CountryListItem
+const CountryListItem = ({ name }) => {
+    let [show, setShow] = useState(false);
+
+    const toggleShow = () => {
+        console.log('show:', show);
+        setShow(!show);
+    }
+
+    return (
+        <div>
+            {name}
+            <button onClick={toggleShow}>
+                {show ? "hide" : "show"}
+            </button>
+            {show && <CountryInfo name={name} />}
+        </div>
+    )
+}
+
+// App
+const App = () => {
 
     /* STATE */
-    const [countryInfo, setCountryInfo] = useState(null);
     const [value, setValue] = useState('');
     const [matches, setMatches] = useState([]);
     const [countryNames, setCountryNames] = useState([]);
-
 
     useEffect(() => {
         const fetchCountryNames = async () => {
@@ -36,11 +55,9 @@ function App() {
         fetchCountryNames();
     }, []);
 
-
     const onInputChange = async (e) => {
         const value = e.target.value.toLowerCase();
         setValue(value);
-        // console.log(`input changed: ${value}`);
 
         // ensure all countries
         if (countryNames.length == 0) {
@@ -55,12 +72,6 @@ function App() {
         setMatches(f);
     }
 
-    // useEffect(() => {
-    //     if (matches.length == 1) {
-    //     }
-
-    // }, [matches]);
-
     /* JSX */
     return (
         <section>
@@ -71,8 +82,8 @@ function App() {
             {matches.length > 10
                 ? <div>more than 10</div>
                 : matches.length > 1
-                    ? matches.map((name, i) =>
-                        <div key={i}>{name}</div>
+                    ? matches.map((name) =>
+                        <CountryListItem key={name} name={name} />
                     )
                     : matches.length == 0
                         ? <div>no countries filtered</div>

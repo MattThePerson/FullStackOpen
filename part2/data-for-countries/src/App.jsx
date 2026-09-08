@@ -82,9 +82,11 @@ const App = () => {
             {matches.length > 10
                 ? <div>more than 10</div>
                 : matches.length > 1
-                    ? matches.map((name) =>
-                        <CountryListItem key={name} name={name} />
-                    )
+                    ? <ul>
+                        {matches.map((name) =>
+                            <li><CountryListItem key={name} name={name} /></li>
+                        )}
+                    </ul>
                     : matches.length == 0
                         ? <div>no countries filtered</div>
                         : <CountryInfo name={matches[0]} />

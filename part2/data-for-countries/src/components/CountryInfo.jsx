@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const CountryInfo = ({ info }) => {
+/* Info Container */
+const InfoContainer = ({ info }) => {
 
     // error return
     if (!info) {
@@ -9,8 +12,6 @@ const CountryInfo = ({ info }) => {
             </div>
         )
     }
-
-    console.log("CountryInfo:", info);
 
     const languages = Array.from(Object.values(info.languages));
 
@@ -24,6 +25,29 @@ const CountryInfo = ({ info }) => {
                 <li key={lng}>{lng}</li>
             )}
             <img src={info.flags.png}></img>
+        </div>
+    )
+}
+
+/* Country Info */
+const CountryInfo = ({ name }) => {
+
+    console.log('CountryInfo:', name);
+
+    const [info, setInfo] = useState(null);
+
+    useEffect(() => {
+        axios
+            .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
+            .then(response => {
+                console.log(response.data);
+                setInfo(response.data);
+            })
+    });
+
+    return (
+        <div>
+            <InfoContainer info={info} />
         </div>
     )
 }

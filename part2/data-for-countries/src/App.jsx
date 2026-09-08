@@ -55,21 +55,11 @@ function App() {
         setMatches(f);
     }
 
-    useEffect(() => {
-        if (matches.length == 1) {
-            axios
-                .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${matches[0]}`)
-                .then(response => {
-                    // console.log(response.data);
-                    setCountryInfo(response.data);
-                })
-        }
+    // useEffect(() => {
+    //     if (matches.length == 1) {
+    //     }
 
-    }, [matches]);
-
-    const getFilteredCountryEls = (cnts) => {
-        return
-    }
+    // }, [matches]);
 
     /* JSX */
     return (
@@ -86,7 +76,7 @@ function App() {
                     )
                     : matches.length == 0
                         ? <div>no countries filtered</div>
-                        : <CountryInfo info={countryInfo} />
+                        : <CountryInfo name={matches[0]} />
             }
         </section>
     )

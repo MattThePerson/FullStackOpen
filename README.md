@@ -12,7 +12,18 @@ By Matt Stirling
 
 Base course is (parts 0-5) Full Stack Web Development (5 cr, CSM1410819)
 
-To get credits you must pass the exam (which does not count towards your grade).
+To get credits you must
+- complete enough to get credits
+- pass the exam
+- register via Open University (instructions may appear in the MOOC page after credits possible to get)
+  _you need to receive UH credits_
+- transfer to Oulu
+
+__Exam__
+
+- exam covers parse 1-5
+- does not count towards final grade, but need to pass to get credits
+- possible to continue submissions after exam
 
 ## Progress (for myself)
 

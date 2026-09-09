@@ -32,7 +32,7 @@ __Exam__
 - **Part 1:** Introduction to React \
     *COMPLETED*: 30.12.2024
 - **Part 2:** Communicating with server \
-    *COMPLETED*:
+    *COMPLETED*: 08.09.2026
 - **Part 3:** Programming a server with NodeJS and Express \
     *COMPLETED*:
 - **Part 4:** Testing Express servers, user administration \

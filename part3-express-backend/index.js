@@ -1,5 +1,4 @@
 const express = require('express')
-const cors = require("cors");
 const app = express()
 
 let notes = [
@@ -21,7 +20,6 @@ let notes = [
 ]
 
 app.use(express.json()) // use express' json-parser
-app.use(cors());
 app.use(express.static("dist"));
 
 const getNoteId = () => {

@@ -2,23 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 
-// allow accepting json in post requests
-app.use(express.json());
-
-// log requests to console using morgan
-app.use(morgan((tokens, req, res) => {
-    const msg = [
-        tokens.method(req, res),
-        tokens.url(req, res),
-        tokens.status(req, res),
-        tokens.res(req, res, 'content-length'), '-',
-        tokens['response-time'](req, res), 'ms',
-    ]
-    if (tokens.method(req, res) === "POST") {
-        msg.push(JSON.stringify(req.body))
-    }
-    return msg.join(" ")
-}));
+/* HARDCODED DATA */
 
 let persons = [
     {
@@ -46,6 +30,30 @@ let persons = [
 function getNewId() {
     return String(Math.floor(Math.random() * Math.pow(2, 32)));
 }
+
+/* MIDDLEWARE */
+
+// allow accepting json in post requests
+app.use(express.json());
+
+// log requests to console using morgan
+app.use(morgan((tokens, req, res) => {
+    const msg = [
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms',
+    ]
+    if (tokens.method(req, res) === "POST") {
+        msg.push(JSON.stringify(req.body))
+    }
+    return msg.join(" ")
+}));
+
+app.use(express.static("dist"));
+
+/* ROUTES */
 
 app.get("/api/persons", (req, res) => {
     res.json(persons);

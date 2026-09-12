@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 if (process.argv.length < 3) {
-    console.log("you must give password as CLI argument: node <file> <password>")
+    console.log("you must give password as CLI argument: node <file> <password>");
     process.exit();
 }
 
@@ -18,28 +18,28 @@ mongoose.connect(url, { family: 4 });
 const Contact = mongoose.model("Contact", new mongoose.Schema({
     name: String,
     number: String,
-}))
+}));
 
 function addContact(name, number) {
     const new_contact = new Contact({
         name: name,
         number: number,
     });
-    new_contact.save().then(result => {
+    new_contact.save().then(() => {
         console.log(`added ${name} number ${number}`);
         closeconn();
-    })
+    });
 }
 
 function fetchContacts() {
     const query = {};
     Contact.find(query).then(result => {
-        console.log("phonebook:")
+        console.log("phonebook:");
         result.forEach(c => {
             console.log(`${c.name} - ${c.number}`);
-        })
+        });
         closeconn();
-    })
+    });
 }
 
 /* main */

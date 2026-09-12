@@ -16,13 +16,13 @@ app.use(morgan((tokens, req, res) => {
         tokens.method(req, res),
         tokens.url(req, res),
         tokens.status(req, res),
-        tokens.res(req, res, 'content-length'), '-',
-        tokens['response-time'](req, res), 'ms',
-    ]
+        tokens.res(req, res, "content-length"), "-",
+        tokens["response-time"](req, res), "ms",
+    ];
     if (tokens.method(req, res) === "POST") {
-        msg.push(JSON.stringify(req.body))
+        msg.push(JSON.stringify(req.body));
     }
-    return msg.join(" ")
+    return msg.join(" ");
 }));
 
 /* ROUTES */
@@ -30,8 +30,8 @@ app.use(morgan((tokens, req, res) => {
 app.get("/api/persons", (req, res) => {
     Person.find({}).then(persons => {
         res.json(persons);
-    })
-})
+    });
+});
 
 app.get("/api/persons/:id", (req, res, next) => {
     const id = req.params.id;
@@ -42,39 +42,39 @@ app.get("/api/persons/:id", (req, res, next) => {
             }
             res.json(person);
         })
-        .catch(err => next(err))
-})
+        .catch(err => next(err));
+});
 
 app.delete("/api/persons/:id", (req, res, next) => {
     const id = req.params.id;
     Person.findByIdAndDelete(id)
-        .then(result => {
+        .then(() => {
             res.status(204).end();
         })
-        .catch(err => next(err))
-})
+        .catch(err => next(err));
+});
 
 app.post("/api/persons", async (req, res, next) => {
     const body = req.body;
     if (!body.name || !body.number) {
-        return res.status(400).json({ error: "name or number missing for contact" })
+        return res.status(400).json({ error: "name or number missing for contact" });
     }
     // check for existing person
     const personWithName = await Person.find({ name: body.name });
     if (personWithName.length > 0) {
-        return res.status(400).json({error: "contact already exists with that name"})
+        return res.status(400).json({ error: "contact already exists with that name" });
     }
     // add new person
     const person = new Person({
         name: body.name,
         number: body.number,
-    })
+    });
     person.save()
         .then(result => {
             res.json(result);
         })
-        .catch(err => next(err))
-})
+        .catch(err => next(err));
+});
 
 app.put("/api/persons/:id", (req, res, next) => {
     const id = req.params.id;
@@ -82,16 +82,16 @@ app.put("/api/persons/:id", (req, res, next) => {
     Person.findById(id)
         .then(person => {
             if (!person) {
-                return res.status(404).json({ error: "no person with that id" })
+                return res.status(404).json({ error: "no person with that id" });
             }
             person.name = name;
             person.number = number;
             person.save().then(updatedPerson => {
                 res.json(updatedPerson);
-            })
+            });
         })
-        .catch(err => next(err))
-})
+        .catch(err => next(err));
+});
 
 app.get("/info", async (req, res) => {
     const time_fmt = (new Date(Date.now())).toString();
@@ -101,25 +101,25 @@ app.get("/info", async (req, res) => {
 <div>${time_fmt}</div>
 `;
     res.send(msg);
-})
+});
 
 // unknown endpoint
 const unknownEndpoint = (req, res) => {
-    res.status(404).send({ error: 'unknown endpoint' });
-}
+    res.status(404).send({ error: "unknown endpoint" });
+};
 app.use(unknownEndpoint);
 
 // error handling middleware
 const errHandler = (err, req, res, next) => {
     console.log(err.message);
     if (err.name === "CastError") {
-        return res.status(400).send({ error: 'malformatted id' })
+        return res.status(400).send({ error: "malformatted id" });
     }
     if (err.name === "ValidationError") {
-        return res.status(400).send({ error: err.message })
+        return res.status(400).send({ error: err.message });
     }
     next(err);
-}
+};
 app.use(errHandler);
 
 /* START */

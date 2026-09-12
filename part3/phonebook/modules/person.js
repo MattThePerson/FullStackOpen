@@ -13,9 +13,28 @@ mongoose.connect(url, { family: 4 })
 
 /* schema */
 
+const isValidPhoneNumber = (number) => {
+    const parts = number.split("-");
+    if (parts.length != 2) return false;
+    if (parts[0].length < 2 || parts[0].length > 3) return false;
+    if (!Number(parts[0]) || !Number(parts[1])) return false;
+    return true;
+}
+
 const personSchema = new mongoose.Schema({
-    name: String,
-    number: String,
+    name: {
+        type: String,
+        minLength: 3,
+        required: true,
+    },
+    number: {
+        type: String,
+        minLength: 8,
+        validate: {
+            validator: v => isValidPhoneNumber(v),
+            message: props => `${props.value} is not a valid phone number`,
+        }
+    },
 })
 
 personSchema.set('toJSON', {

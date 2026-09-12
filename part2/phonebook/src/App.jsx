@@ -26,7 +26,7 @@ const App = () => {
 
     const [notification, setNotification] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
-    
+
 
     /* fetch initial persons */
     useEffect(() => {
@@ -39,7 +39,7 @@ const App = () => {
     }, [])
     console.debug(`amount of persons ${persons.length}`);
 
-    
+
     /* handleFormSubmit: new contact form */
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -48,13 +48,13 @@ const App = () => {
             alert(`\"${newNumber}\" is not a valid phone number`);
             return;
         }
-        
+
         const personObj = {
             name: newName,
             number: newNumber,
         };
 
-        
+
         // update existing contact
         const existingPerson = persons.find(x => x.name.toLowerCase() === newName.toLowerCase());
         if (existingPerson) {
@@ -76,7 +76,7 @@ const App = () => {
             }
             return;
         }
-        
+
 
         // add new contact
         personsService
@@ -88,10 +88,15 @@ const App = () => {
                 setNotification(`added contact "${returnedPerson.name}" with phone number "${returnedPerson.number}" and id "${returnedPerson.id}"`)
                 setTimeout(() => setNotification(null), 4000);
             })
-        
+            .catch(err => {
+                console.log(err.response.data.error);
+                setErrorMessage(err.response.data.error);
+                setTimeout(() => setErrorMessage(null), 4000);
+            })
+
     }
 
-    
+
     /* deleteContact */
     const deleteContact = (id) => {
         const person = persons.find(p => p.id === id);
@@ -100,22 +105,22 @@ const App = () => {
             console.debug("not deleting contact");
             return;
         }
-        
+
         const updatePersonsAfterDeletion = () => {
             setPersons(persons.filter(p => p.id !== id));
             setNotification(`deleted contact "${person.name}" (id: ${person.id})`)
             setTimeout(() => setNotification(null), 3000)
         }
-        
+
         personsService
             .deletePerson(id)
             .then(updatePersonsAfterDeletion)
             .catch(updatePersonsAfterDeletion)
     }
-    
+
 
     /* filter contacts */
-    const personsToShow = persons.filter(c => 
+    const personsToShow = persons.filter(c =>
         c.name.toLowerCase().includes(nameFilter.toLowerCase())
     );
 
@@ -148,7 +153,7 @@ const App = () => {
                 personsToShow={personsToShow}
                 deleteContactFunc={deleteContact}
             />
-            
+
         </div>
     )
 }

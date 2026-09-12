@@ -54,7 +54,7 @@ app.delete("/api/persons/:id", (req, res, next) => {
         .catch(err => next(err))
 })
 
-app.post("/api/persons", async (req, res) => {
+app.post("/api/persons", async (req, res, next) => {
     const body = req.body;
     if (!body.name || !body.number) {
         return res.status(400).json({ error: "name or number missing for contact" })
@@ -69,9 +69,11 @@ app.post("/api/persons", async (req, res) => {
         name: body.name,
         number: body.number,
     })
-    person.save().then(result => {
-        res.json(result);
-    })
+    person.save()
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => next(err))
 })
 
 app.put("/api/persons/:id", (req, res, next) => {
@@ -112,6 +114,9 @@ const errHandler = (err, req, res, next) => {
     console.log(err.message);
     if (err.name === "CastError") {
         return res.status(400).send({ error: 'malformatted id' })
+    }
+    if (err.name === "ValidationError") {
+        return res.status(400).send({ error: err.message })
     }
     next(err);
 }

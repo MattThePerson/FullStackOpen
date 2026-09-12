@@ -7,6 +7,7 @@ const app = express();
 
 /* MIDDLEWARE */
 
+app.use(express.static("dist")); // serve frontend statically
 app.use(express.json()); // allow accepting json in post requests
 
 // log requests to console using morgan
@@ -24,8 +25,6 @@ app.use(morgan((tokens, req, res) => {
     return msg.join(" ")
 }));
 
-app.use(express.static("dist")); // serve frontend statically
-
 /* ROUTES */
 
 app.get("/api/persons", (req, res) => {
@@ -34,22 +33,25 @@ app.get("/api/persons", (req, res) => {
     })
 })
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
     const id = req.params.id;
-    Person.findById(id).then(person => {
-        if (!person) {
-            return res.status(404).json({ error: "no person with that id" });
-        }
-        res.json(person);
-    })
+    Person.findById(id)
+        .then(person => {
+            if (!person) {
+                return res.status(404).json({ error: "no person with that id" });
+            }
+            res.json(person);
+        })
+        .catch(err => next(err))
 })
 
-// TODO: fix
-app.delete("/api/persons/:id", (req, res) => {
-    res.status(501).end();
-    // const id = req.params.id;
-    // persons = persons.filter(p => p.id !== id);
-    // res.status(204).end();
+app.delete("/api/persons/:id", (req, res, next) => {
+    const id = req.params.id;
+    Person.findByIdAndDelete(id)
+        .then(result => {
+            res.status(204).end();
+        })
+        .catch(err => next(err))
 })
 
 app.post("/api/persons", async (req, res) => {
@@ -72,6 +74,23 @@ app.post("/api/persons", async (req, res) => {
     })
 })
 
+app.put("/api/persons/:id", (req, res, next) => {
+    const id = req.params.id;
+    const { name, number } = req.body;
+    Person.findById(id)
+        .then(person => {
+            if (!person) {
+                return res.status(404).json({ error: "no person with that id" })
+            }
+            person.name = name;
+            person.number = number;
+            person.save().then(updatedPerson => {
+                res.json(updatedPerson);
+            })
+        })
+        .catch(err => next(err))
+})
+
 app.get("/info", async (req, res) => {
     const time_fmt = (new Date(Date.now())).toString();
     const persons = await Person.find({});
@@ -81,6 +100,22 @@ app.get("/info", async (req, res) => {
 `;
     res.send(msg);
 })
+
+// unknown endpoint
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' });
+}
+app.use(unknownEndpoint);
+
+// error handling middleware
+const errHandler = (err, req, res, next) => {
+    console.log(err.message);
+    if (err.name === "CastError") {
+        return res.status(400).send({ error: 'malformatted id' })
+    }
+    next(err);
+}
+app.use(errHandler);
 
 /* START */
 

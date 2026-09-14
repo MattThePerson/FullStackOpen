@@ -6,9 +6,9 @@
     "scripts": {
         "start": "node index.js",
         "dev": "node index.js --watch",
-        "eslint": "eslint .",
-        "eslint:fix": "eslint . --fix",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "test": "node --test"
     },
     "author": "Matt Stirling",
     "license": "ISC",

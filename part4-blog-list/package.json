@@ -1,0 +1,26 @@
+{
+    "name": "part4-blog-list",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "node index.js --watch",
+        "eslint": "eslint .",
+        "eslint:fix": "eslint . --fix",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Matt Stirling",
+    "license": "ISC",
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@stylistic/eslint-plugin": "^5.10.0",
+        "eslint": "^10.10.0",
+        "globals": "^17.12.0"
+    },
+    "dependencies": {
+        "dotenv": "^17.4.2",
+        "express": "^5.2.1",
+        "mongoose": "^9.10.0"
+    }
+}

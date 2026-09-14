@@ -34,7 +34,7 @@ __Exam__
 - **Part 2:** Communicating with server \
     *COMPLETED*: 08.09.2026
 - **Part 3:** Programming a server with NodeJS and Express \
-    *COMPLETED*:
+    *COMPLETED*: 12.09.2026
 - **Part 4:** Testing Express servers, user administration \
     *COMPLETED*:
 - **Part 5:** Testing React apps \

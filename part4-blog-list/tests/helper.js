@@ -21,6 +21,13 @@ const initialBlogs = [
     },
 ];
 
+const sampleBlog = {
+    title: "Stupid weather today",
+    author: "The stupid man",
+    url: "https://stupid.man.com/weather",
+    likes: 101,
+};
+
 async function getBlogsInDb() {
     const blogs = await Blog.find({});
     return blogs.map(blog => blog.toJSON());
@@ -29,4 +36,5 @@ async function getBlogsInDb() {
 module.exports = {
     initialBlogs,
     getBlogsInDb,
+    sampleBlog,
 };

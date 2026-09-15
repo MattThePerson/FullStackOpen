@@ -50,6 +50,41 @@ describe("blog api", () => {
         assert.deepStrictEqual(newlyAdded, newBlog);
     });
 
+    // POST
+    test("POST: missing likes", async () => {
+        const blog = helper.sampleBlog;
+        delete blog.likes;
+        await api
+            .post("/api/blogs")
+            .send(blog)
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
+        const addedBlog = (await helper.getBlogsInDb()).find(b => b.title === blog.title);
+        assert(addedBlog.likes === 0);
+    });
+
+    // POST
+    test("POST: missing title", async () => {
+        const blog = helper.sampleBlog;
+        delete blog.title;
+        await api
+            .post("/api/blogs")
+            .send(blog)
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
+    });
+
+    // POST
+    test("POST: missing url", async () => {
+        const blog = helper.sampleBlog;
+        delete blog.url;
+        await api
+            .post("/api/blogs")
+            .send(blog)
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
+    });
+
     // DELETE
     test("DELETE: by id", async () => {
         const blogsAtStart = await helper.getBlogsInDb();
@@ -84,7 +119,8 @@ describe("blog api", () => {
         await api
             .put(`/api/blogs/${id}`)
             .send(blog)
-            .expect(400);
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
     });
 
 });

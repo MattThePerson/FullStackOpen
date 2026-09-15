@@ -68,93 +68,97 @@ const blogs = [
 
 /* TESTS */
 
-test("dummy equals 1", () => {
-    const blogs = [];
-    const result = listHelper.dummy(blogs);
-    assert(result, 1);
-});
+describe("list helpers", () => {
 
-describe("total likes", () => {
-    test("empty list", () => {
-        assert.strictEqual(listHelper.totalLikes([]), 0);
+    test("dummy equals 1", () => {
+        const blogs = [];
+        const result = listHelper.dummy(blogs);
+        assert(result, 1);
     });
 
-    test("when list has only one blog, equals the likes of that", () => {
-        const result = listHelper.totalLikes(listWithOneBlog);
-        assert.strictEqual(result, 5);
+    describe("total likes", () => {
+        test("empty list", () => {
+            assert.strictEqual(listHelper.totalLikes([]), 0);
+        });
+
+        test("when list has only one blog, equals the likes of that", () => {
+            const result = listHelper.totalLikes(listWithOneBlog);
+            assert.strictEqual(result, 5);
+        });
+
+        test("a bigger list", () => {
+            const result = listHelper.totalLikes(blogs);
+            assert.strictEqual(result, 36);
+        });
     });
 
-    test("a bigger list", () => {
-        const result = listHelper.totalLikes(blogs);
-        assert.strictEqual(result, 36);
-    });
-});
+    describe("favourite blog", () => {
+        test("empty list", () => {
+            assert.strictEqual(
+                listHelper.favouriteBlog([]),
+                null,
+            );
+        });
 
-describe("favourite blog", () => {
-    test("empty list", () => {
-        assert.strictEqual(
-            listHelper.favouriteBlog([]),
-            null,
-        );
-    });
+        test("list of one", () => {
+            assert.deepStrictEqual(
+                listHelper.favouriteBlog(listWithOneBlog),
+                listWithOneBlog[0],
+            );
+        });
 
-    test("list of one", () => {
-        assert.deepStrictEqual(
-            listHelper.favouriteBlog(listWithOneBlog),
-            listWithOneBlog[0],
-        );
-    });
-
-    test("many blogs", () => {
-        assert.deepStrictEqual(
-            listHelper.favouriteBlog(blogs),
-            blogs[2],
-        );
-    });
-});
-
-describe("most blogs", () => {
-    test("in empty list", () => {
-        assert.strictEqual(
-            listHelper.mostBlogs([]),
-            null,
-        );
+        test("many blogs", () => {
+            assert.deepStrictEqual(
+                listHelper.favouriteBlog(blogs),
+                blogs[2],
+            );
+        });
     });
 
-    test("list of one", () => {
-        assert.deepStrictEqual(
-            listHelper.mostBlogs(listWithOneBlog),
-            { author: "Edsger W. Dijkstra", blogs: 1 },
-        );
+    describe("most blogs", () => {
+        test("in empty list", () => {
+            assert.strictEqual(
+                listHelper.mostBlogs([]),
+                null,
+            );
+        });
+
+        test("list of one", () => {
+            assert.deepStrictEqual(
+                listHelper.mostBlogs(listWithOneBlog),
+                { author: "Edsger W. Dijkstra", blogs: 1 },
+            );
+        });
+
+        test("many blogs", () => {
+            assert.deepStrictEqual(
+                listHelper.mostBlogs(blogs),
+                { author: "Robert C. Martin", blogs: 3 },
+            );
+        });
     });
 
-    test("many blogs", () => {
-        assert.deepStrictEqual(
-            listHelper.mostBlogs(blogs),
-            { author: "Robert C. Martin", blogs: 3 },
-        );
-    });
-});
+    describe("most likes", () => {
+        test("in empty list", () => {
+            assert.strictEqual(
+                listHelper.mostLikes([]),
+                null,
+            );
+        });
 
-describe("most likes", () => {
-    test("in empty list", () => {
-        assert.strictEqual(
-            listHelper.mostLikes([]),
-            null,
-        );
+        test("list of one", () => {
+            assert.deepStrictEqual(
+                listHelper.mostLikes(listWithOneBlog),
+                { author: "Edsger W. Dijkstra", likes: 5 },
+            );
+        });
+
+        test("many blogs", () => {
+            assert.deepStrictEqual(
+                listHelper.mostLikes(blogs),
+                { author: "Edsger W. Dijkstra", likes: 17 },
+            );
+        });
     });
 
-    test("list of one", () => {
-        assert.deepStrictEqual(
-            listHelper.mostLikes(listWithOneBlog),
-            { author: "Edsger W. Dijkstra", likes: 5 },
-        );
-    });
-
-    test("many blogs", () => {
-        assert.deepStrictEqual(
-            listHelper.mostLikes(blogs),
-            { author: "Edsger W. Dijkstra", likes: 17 },
-        );
-    });
 });

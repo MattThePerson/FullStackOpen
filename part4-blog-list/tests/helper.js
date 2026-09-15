@@ -21,12 +21,12 @@ const initialBlogs = [
     },
 ];
 
-function getBlogs() {
-    const blogs = initialBlogs.map(blog => new Blog(blog));
-    return blogs.map(b => b.toJSON());
+async function getBlogsInDb() {
+    const blogs = await Blog.find({});
+    return blogs.map(blog => blog.toJSON());
 }
 
 module.exports = {
     initialBlogs,
-    getBlogs,
+    getBlogsInDb,
 };

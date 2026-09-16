@@ -10,6 +10,15 @@ const api = supertest(app);
 
 describe("blog api", () => {
 
+    beforeEach(async () => {
+        await Blog.deleteMany({});
+        const blogs = helper.initialBlogs;
+        for (let blog of blogs) {
+            const blogObj = new Blog(blog);
+            await blogObj.save();
+        }
+    });
+
     // GET
     test("GET: all blogs", async () => {
         const response = await api
@@ -123,15 +132,6 @@ describe("blog api", () => {
             .expect("Content-Type", /application\/json/);
     });
 
-});
-
-beforeEach(async () => {
-    await Blog.deleteMany({});
-    const blogs = helper.initialBlogs;
-    for (let blog of blogs) {
-        const blogObj = new Blog(blog);
-        await blogObj.save();
-    }
 });
 
 after(async () => {

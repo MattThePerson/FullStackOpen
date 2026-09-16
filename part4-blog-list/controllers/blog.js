@@ -1,21 +1,21 @@
-const blogsRoute = require("express").Router();
+const blogsRouter = require("express").Router();
 const Blog = require("../models/blog");
 
 // GET
-blogsRoute.get("/", async (req, res) => {
+blogsRouter.get("/", async (req, res) => {
     const blogs = await Blog.find({});
     res.json(blogs);
 });
 
 // POST
-blogsRoute.post("/", async (req, res) => {
+blogsRouter.post("/", async (req, res) => {
     const blog = new Blog(req.body);
     const result = await blog.save();
     res.status(201).json(result);
 });
 
 // PUT
-blogsRoute.put("/:id", async (req, res) => {
+blogsRouter.put("/:id", async (req, res) => {
     const { title, author, url, likes } = req.body;
     const id = req.params.id;
     const blog = await Blog.findById(id);
@@ -31,10 +31,10 @@ blogsRoute.put("/:id", async (req, res) => {
 });
 
 // DELETE
-blogsRoute.delete("/:id", async (req, res) => {
+blogsRouter.delete("/:id", async (req, res) => {
     const id = req.params.id;
     await Blog.findByIdAndDelete(id);
     res.status(204).end();
 });
 
-module.exports = blogsRoute;
+module.exports = blogsRouter;

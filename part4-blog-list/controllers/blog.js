@@ -1,6 +1,13 @@
 const blogsRouter = require("express").Router();
+const jwt = require("jsonwebtoken");
+const logging = require("../utils/logger");
 const Blog = require("../models/blog");
 const User = require("../models/user");
+
+const isNotUniqueBlog = async (blog) => {
+    const urlMatch = await Blog.findOne({ url: blog.url });
+    return urlMatch !== null;
+};
 
 // GET
 blogsRouter.get("/", async (req, res) => {
@@ -12,12 +19,32 @@ blogsRouter.get("/", async (req, res) => {
 
 // POST
 blogsRouter.post("/", async (req, res) => {
+    // authorization
+    let decodedToken;
+    try {
+        decodedToken = jwt.verify(req.token, process.env.SECRET);
+    } catch (e) {
+        if (e instanceof jwt.JsonWebTokenError) {
+            logging.error("invalid signature for webtoken");
+        }
+    }
+    if (!decodedToken || !decodedToken.id) {
+        return res.status(401).json({
+            error: "unauthorized action"
+        });
+    }
+    // save blog and update user
     const { title, author, url, likes } = req.body;
     const blog = new Blog({ title, author, url, likes });
-    const user = (await User.find({}))[0]; // TODO: replace with proper logic
+    if (await isNotUniqueBlog(blog)) {
+        return res.status(400).json({
+            error: "that exact blog was already submitted"
+        });
+    }
+    const user = await User.findById(decodedToken.id);
     blog.user = user._id;
-    const result = await blog.save();
     user.blogs = user.blogs.concat(blog._id);
+    const result = await blog.save();
     await user.save();
     res.status(201).json(result);
 });

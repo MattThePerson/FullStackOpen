@@ -1,4 +1,5 @@
-// const logger = require("../utils/logger");
+const jwt = require("jsonwebtoken");
+const logging = require("../utils/logger");
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({
@@ -28,8 +29,20 @@ const tokenExtractor = (req, res, next) => {
     next();
 };
 
+const userExtractor = (req, res, next) => {
+    try {
+        req.user = jwt.verify(req.token, process.env.SECRET);
+    } catch (e) {
+        if (e instanceof jwt.JsonWebTokenError) {
+            logging.error("invalid signature for webtoken");
+        }
+    }
+    next();
+};
+
 module.exports = {
     errorHandler,
     unknownEndpoint,
     tokenExtractor,
+    userExtractor,
 };

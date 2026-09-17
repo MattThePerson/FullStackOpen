@@ -1,12 +1,19 @@
 const blogsRouter = require("express").Router();
-const jwt = require("jsonwebtoken");
-const logging = require("../utils/logger");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 
 const isNotUniqueBlog = async (blog) => {
     const urlMatch = await Blog.findOne({ url: blog.url });
     return urlMatch !== null;
+};
+
+const userAuthorize = (req, res, next) => {
+    if (!req.user || !req.user.id) {
+        return res.status(401).json({
+            error: "unauthorized action"
+        });
+    }
+    next();
 };
 
 // GET
@@ -17,23 +24,20 @@ blogsRouter.get("/", async (req, res) => {
     res.json(blogs);
 });
 
+// GET :id
+blogsRouter.get("/:id", async (req, res) => {
+    const id = req.params.id;
+    const blog = await Blog
+        .findById(id)
+        .populate("user", { username: 1, name: 1 });
+    if (!blog) {
+        return res.status(404).json({ error: "no blog with that id" });
+    }
+    res.json(blog);
+});
+
 // POST
-blogsRouter.post("/", async (req, res) => {
-    // authorization
-    let decodedToken;
-    try {
-        decodedToken = jwt.verify(req.token, process.env.SECRET);
-    } catch (e) {
-        if (e instanceof jwt.JsonWebTokenError) {
-            logging.error("invalid signature for webtoken");
-        }
-    }
-    if (!decodedToken || !decodedToken.id) {
-        return res.status(401).json({
-            error: "unauthorized action"
-        });
-    }
-    // save blog and update user
+blogsRouter.post("/", userAuthorize, async (req, res) => {
     const { title, author, url, likes } = req.body;
     const blog = new Blog({ title, author, url, likes });
     if (await isNotUniqueBlog(blog)) {
@@ -41,7 +45,7 @@ blogsRouter.post("/", async (req, res) => {
             error: "that exact blog was already submitted"
         });
     }
-    const user = await User.findById(decodedToken.id);
+    const user = await User.findById(req.user.id);
     blog.user = user._id;
     user.blogs = user.blogs.concat(blog._id);
     const result = await blog.save();
@@ -66,8 +70,15 @@ blogsRouter.put("/:id", async (req, res) => {
 });
 
 // DELETE
-blogsRouter.delete("/:id", async (req, res) => {
+blogsRouter.delete("/:id", userAuthorize, async (req, res) => {
     const id = req.params.id;
+    const blog = await Blog.findById(id);
+    if (!blog) {
+        return res.status(204).end();
+    }
+    if (blog.user.toString() !== req.user.id) {
+        return res.status(401).json({ error: "only the creator of a blog can delete it" });
+    }
     await Blog.findByIdAndDelete(id);
     res.status(204).end();
 });

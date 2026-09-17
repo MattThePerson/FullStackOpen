@@ -25,6 +25,21 @@ __Exam__
 - does not count towards final grade, but need to pass to get credits
 - possible to continue submissions after exam
 
+## Learnings
+
+__hashing and tokens__
+
+```js
+// bcrypt: hash/compare
+const hsh = bcrypt.hash(pwd, saltRounds) // encode
+const result = await bcrypt.compare(pwd, hsh) // decode
+
+// jsonwebtoken: sign/verify
+const token = jst.sign(data, key) // encode ?
+const data = jst.verify(token, key) // decode
+
+```
+
 ## Progress (for myself)
 
 - **Part 0:** Fundamentals of Web apps \
@@ -36,7 +51,7 @@ __Exam__
 - **Part 3:** Programming a server with NodeJS and Express \
     *COMPLETED*: 12.09.2026
 - **Part 4:** Testing Express servers, user administration \
-    *COMPLETED*:
+    *COMPLETED*: 17.09.2026
 - **Part 5:** Testing React apps \
     *COMPLETED*:
 - **Part 6:** Advanced state management \
@@ -55,18 +70,4 @@ __Exam__
     *COMPLETED*:
 - **Part 13:** Using relational databases \
     *COMPLETED*:
-
-## Learnings
-
-```js
-// bcrypt: hash/compare
-const hsh = bcrypt.hash(pwd, saltRounds) // encode
-const result = await bcrypt.compare(pwd, hsh) // decode
-
-// jsonwebtoken: sign/verify
-const token = jst.sign(data, key) // encode ?
-const data = jst.verify(token, key) // decode
-
-```
-
 

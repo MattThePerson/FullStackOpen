@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const config = require("../utils/config");
 const logging = require("../utils/logger");
 
 const unknownEndpoint = (request, response) => {
@@ -8,7 +9,7 @@ const unknownEndpoint = (request, response) => {
 };
 
 const errorHandler = (error, request, response, next) => {
-    // logger.error(error.message);
+    logging.error(`[errorHandler middleware] ${error.name}: ${error.message}`);
 
     if (error.name === "CastError") {
         return response.status(400).send({ error: "malformatted id" });
@@ -31,7 +32,7 @@ const tokenExtractor = (req, res, next) => {
 
 const userExtractor = (req, res, next) => {
     try {
-        req.user = jwt.verify(req.token, process.env.SECRET);
+        req.user = jwt.verify(req.token, config.SECRET);
     } catch (e) {
         if (e instanceof jwt.JsonWebTokenError) {
             logging.error("invalid signature for webtoken");

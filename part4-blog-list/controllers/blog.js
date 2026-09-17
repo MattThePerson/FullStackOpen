@@ -7,8 +7,20 @@ const isNotUniqueBlog = async (blog) => {
     return urlMatch !== null;
 };
 
-const userAuthorize = (req, res, next) => {
+const userAuthorize = async (req, res, next) => {
     if (!req.user || !req.user.id) {
+        return res.status(401).json({
+            error: "unauthorized action"
+        });
+    }
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(401).json({
+                error: "unauthorized action"
+            });
+        }
+    } catch {
         return res.status(401).json({
             error: "unauthorized action"
         });

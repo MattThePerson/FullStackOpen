@@ -1,6 +1,7 @@
 const loginRouter = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const config = require("../utils/config");
 const User = require("../models/user");
 
 loginRouter.post("/", async (req, res) => {
@@ -21,8 +22,8 @@ loginRouter.post("/", async (req, res) => {
     };
     const token = jwt.sign(
         userObj,
-        process.env.SECRET,
-        { expiresIn: 60*60*24*7 }, // a week because why not
+        config.SECRET,
+        // { expiresIn: 60*60*24*7 }, // a week because why not
     );
 
     res.json({ token, username });

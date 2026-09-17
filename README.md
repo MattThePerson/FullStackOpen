@@ -55,3 +55,18 @@ __Exam__
     *COMPLETED*:
 - **Part 13:** Using relational databases \
     *COMPLETED*:
+
+## Learnings
+
+```js
+// bcrypt: hash/compare
+const hsh = bcrypt.hash(pwd, saltRounds) // encode
+const result = await bcrypt.compare(pwd, hsh) // decode
+
+// jsonwebtoken: sign/verify
+const token = jst.sign(data, key) // encode ?
+const data = jst.verify(token, key) // decode
+
+```
+
+

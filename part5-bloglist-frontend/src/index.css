@@ -1,0 +1,18 @@
+
+#splash-board {
+    position: absolute;
+    bottom: 1rem;
+    border-radius: 5px;
+    padding: 3px 8px;
+    height: fit-content;
+}
+
+#splash-board.good {
+    background: green;
+    border: 2px solid darkgreen
+}
+
+#splash-board.bad {
+    background: red;
+    border: 2px solid darkred;
+}

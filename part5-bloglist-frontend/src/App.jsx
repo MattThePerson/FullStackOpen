@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -14,6 +14,27 @@ const App = () => {
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
+
+    const [splashMessage, setSplashMessage] = useState(null)
+    const [splashGood, setSplashGood] = useState(false)
+    let splashTimeout = useRef(null)
+
+    // splash message
+    const splash = {
+        good: (msg, timeout=3000) => {
+            setSplashGood(true)
+            splash.set(msg, timeout)
+        },
+        bad: (msg, timeout=3000) => {
+            setSplashGood(false)
+            splash.set(msg, timeout)
+        },
+        set: (msg, timeout) => {
+            setSplashMessage(msg)
+            clearTimeout(splashTimeout.current)
+            splashTimeout.current = setTimeout(() => setSplashMessage(null), timeout)
+        },
+    }
 
     // get blogs
     useEffect(() => {
@@ -36,8 +57,10 @@ const App = () => {
         if (res.good) {
             setUser(res.data)
             localStore.setJson('loggedInUser', res.data)
+            splash.good(`welcome ${username}`)
         } else {
             console.log('unable to authenticate user: ', username)
+            splash.b('unable to authenticate user')
         }
     }
 
@@ -45,6 +68,7 @@ const App = () => {
     const handleLogout = () => {
         setUser(null)
         localStore.remove('loggedInUser')
+        splash(`goodbye ${username}`)
     }
 
     // handle: blog create
@@ -54,8 +78,10 @@ const App = () => {
         const res = await blogService.create(title, author, url)
         if (res.good) {
             console.log('GOOD:', res.data)
+            splash.good('created new blog', 2000)
         } else {
             console.log('BAD:', res.status, res.data)
+            splash.bad(`blog creation failed: ${JSON.stringify(res.data)}`, 4000)
         }
     }
 
@@ -125,6 +151,15 @@ const App = () => {
         </div>
     )
 
+    // COMPONENT: splash board
+    const splashBoardGood = (
+        <div id="splash-board" class={splashGood ? 'good' : 'bad'}>
+            <h2>
+                {splashMessage}
+            </h2>
+        </div>
+    )
+
     /* RETURN */
     return (
         <>
@@ -133,6 +168,9 @@ const App = () => {
 
             {/* logged in */}
             {user && blogList}
+
+            {/* splash */}
+            {splashMessage && splashBoardGood}
         </>
     )
 }

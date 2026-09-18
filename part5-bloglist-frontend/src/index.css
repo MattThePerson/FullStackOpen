@@ -2,6 +2,7 @@
 #splash-board {
     position: absolute;
     bottom: 1rem;
+    right: 1rem;
     border-radius: 5px;
     padding: 3px 8px;
     height: fit-content;

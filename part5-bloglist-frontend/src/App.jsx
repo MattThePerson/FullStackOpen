@@ -15,25 +15,67 @@ const App = () => {
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
 
+    /* Splash board */
     const [splashMessage, setSplashMessage] = useState(null)
     const [splashGood, setSplashGood] = useState(false)
     let splashTimeout = useRef(null)
 
-    // splash message
+    // api and component
     const splash = {
-        good: (msg, timeout=3000) => {
+        good: (msg, duration=3000) => {
             setSplashGood(true)
-            splash.set(msg, timeout)
+            splash.set(msg, duration)
         },
-        bad: (msg, timeout=3000) => {
+        bad: (msg, duration=3000) => {
             setSplashGood(false)
-            splash.set(msg, timeout)
+            splash.set(msg, duration)
         },
-        set: (msg, timeout) => {
+        set: (msg, duration) => {
             setSplashMessage(msg)
             clearTimeout(splashTimeout.current)
-            splashTimeout.current = setTimeout(() => setSplashMessage(null), timeout)
+            splashTimeout.current = setTimeout(() => setSplashMessage(null), duration)
         },
+        component: (
+            <div id="splash-board" className={splashGood ? 'good' : 'bad'}>
+                <h2>
+                    {splashMessage}
+                </h2>
+            </div>
+        ),
+    }
+
+    // handle: login
+    const handleLogin = async (event) => {
+        event.preventDefault()
+        const res = await loginService.authenticateUser(username, password)
+        if (res.good) {
+            setUser(res.data)
+            localStore.setJson('loggedInUser', res.data)
+            splash.good(`welcome ${username}`)
+        } else {
+            splash.bad('unable to authenticate user')
+        }
+    }
+
+    // handle: logout
+    const handleLogout = () => {
+        setUser(null)
+        localStore.remove('loggedInUser')
+        splash.good(`goodbye ${username}`)
+    }
+
+    // handle: blog create
+    const handleBlogCreate = async (e) => {
+        e.preventDefault()
+        blogService.setAuthToken(user.token)
+        const res = await blogService.create(title, author, url)
+        if (res.good) {
+            const newBlogs = [ ...blogs, res.data ]
+            setBlogs(newBlogs)
+            splash.good('created new blog', 2000)
+        } else {
+            splash.bad(`blog creation failed: ${JSON.stringify(res.data)}`, 4000)
+        }
     }
 
     // get blogs
@@ -49,41 +91,6 @@ const App = () => {
             setUsername(user.username)
         }
     }, [])
-
-    // handle: login
-    const handleLogin = async (event) => {
-        event.preventDefault()
-        const res = await loginService.authenticateUser(username, password)
-        if (res.good) {
-            setUser(res.data)
-            localStore.setJson('loggedInUser', res.data)
-            splash.good(`welcome ${username}`)
-        } else {
-            console.log('unable to authenticate user: ', username)
-            splash.b('unable to authenticate user')
-        }
-    }
-
-    // handle: logout
-    const handleLogout = () => {
-        setUser(null)
-        localStore.remove('loggedInUser')
-        splash(`goodbye ${username}`)
-    }
-
-    // handle: blog create
-    const handleBlogCreate = async (e) => {
-        e.preventDefault()
-        blogService.setAuthToken(user.token)
-        const res = await blogService.create(title, author, url)
-        if (res.good) {
-            console.log('GOOD:', res.data)
-            splash.good('created new blog', 2000)
-        } else {
-            console.log('BAD:', res.status, res.data)
-            splash.bad(`blog creation failed: ${JSON.stringify(res.data)}`, 4000)
-        }
-    }
 
     // COMPONENT: login form
     const loginForm = (
@@ -151,16 +158,7 @@ const App = () => {
         </div>
     )
 
-    // COMPONENT: splash board
-    const splashBoardGood = (
-        <div id="splash-board" class={splashGood ? 'good' : 'bad'}>
-            <h2>
-                {splashMessage}
-            </h2>
-        </div>
-    )
-
-    /* RETURN */
+    /* JSX */
     return (
         <>
             {/* not logged in */}
@@ -170,7 +168,7 @@ const App = () => {
             {user && blogList}
 
             {/* splash */}
-            {splashMessage && splashBoardGood}
+            {splashMessage && splash.component}
         </>
     )
 }

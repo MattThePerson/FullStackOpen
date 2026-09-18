@@ -22,6 +22,7 @@ const App = () => {
         const user = localStore.getJson('loggedInUser')
         if (user) {
             setUser(user)
+            setUsername(user.username)
         }
     }, [])
 
@@ -73,7 +74,6 @@ const App = () => {
     /* RETURN */
     return (
         <>
-
             {/* not logged in */}
             {!user && loginForm}
 
@@ -81,17 +81,17 @@ const App = () => {
             {user && (
                 <div>
                     <h2>blogs</h2>
-                    <div>
+                    <p>
                         {username} logged in
                         <button onClick={handleLogout}>
                             Log out
                         </button>
-                    </div>
-                    <p>
+                    </p>
+                    <div>
                         {blogs.map(blog =>
                             <Blog key={blog.id} blog={blog} />
                         )}
-                    </p>
+                    </div>
                 </div>
             )}
         </>

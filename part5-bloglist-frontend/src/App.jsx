@@ -6,15 +6,18 @@ import localStore from './services/localStorage'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
 
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+
     // get blogs
     useEffect(() => {
-        blogService.getAll().then(blogs =>
-            setBlogs(blogs)
-        )
+        blogService.getAll().then(res => setBlogs(res.data))
     }, [])
 
     // logged in user
@@ -26,41 +29,49 @@ const App = () => {
         }
     }, [])
 
-    // handle login
+    // handle: login
     const handleLogin = async (event) => {
         event.preventDefault()
-        const user = await loginService.authenticateUser(username, password)
-        if (user) {
-            setUser(user)
-            localStore.setJson('loggedInUser', user)
+        const res = await loginService.authenticateUser(username, password)
+        if (res.good) {
+            setUser(res.data)
+            localStore.setJson('loggedInUser', res.data)
         } else {
             console.log('unable to authenticate user: ', username)
         }
     }
 
-    // handle logout
+    // handle: logout
     const handleLogout = () => {
         setUser(null)
         localStore.remove('loggedInUser')
     }
 
-    // login form
+    // handle: blog create
+    const handleBlogCreate = async (e) => {
+        e.preventDefault()
+        blogService.setAuthToken(user.token)
+        const res = await blogService.create(title, author, url)
+        if (res.good) {
+            console.log('GOOD:', res.data)
+        } else {
+            console.log('BAD:', res.status, res.data)
+        }
+    }
+
+    // COMPONENT: login form
     const loginForm = (
         <form onSubmit={handleLogin}>
             <h2>Log in</h2>
             <div>
-                <label>
-                    username
+                <label>username
                     <input
-                        type="text"
-                        // value={username}
                         onChange={({ target }) => setUsername(target.value)}
                     ></input>
                 </label>
             </div>
             <div>
-                <label>
-                    password
+                <label>password
                     <input
                         type="password"
                         onChange={({ target }) => setPassword(target.value)}
@@ -71,6 +82,49 @@ const App = () => {
         </form>
     )
 
+    // COMPONENT: blog list
+    const blogList = (
+        <div>
+            <h2>blogs</h2>
+            <p>
+                {username} logged in
+                <button onClick={handleLogout}>
+                    Log out
+                </button>
+            </p>
+            {/* blog adder */}
+            <section>
+                <form onSubmit={handleBlogCreate}>
+                    <div>
+                        <label>title
+                            <input onChange={({ target }) => setTitle(target.value)}
+                            ></input>
+                        </label>
+                    </div>
+                    <div>
+                        <label>author
+                            <input onChange={({ target }) => setAuthor(target.value)}
+                            ></input>
+                        </label>
+                    </div>
+                    <div>
+                        <label>url
+                            <input onChange={({ target }) => setUrl(target.value)}
+                            ></input>
+                        </label>
+                    </div>
+                    <button>create</button>
+                </form>
+            </section>
+            {/* blog list */}
+            <section>
+                {blogs.map(blog =>
+                    <Blog key={blog.id} blog={blog} />
+                )}
+            </section>
+        </div>
+    )
+
     /* RETURN */
     return (
         <>
@@ -78,22 +132,7 @@ const App = () => {
             {!user && loginForm}
 
             {/* logged in */}
-            {user && (
-                <div>
-                    <h2>blogs</h2>
-                    <p>
-                        {username} logged in
-                        <button onClick={handleLogout}>
-                            Log out
-                        </button>
-                    </p>
-                    <div>
-                        {blogs.map(blog =>
-                            <Blog key={blog.id} blog={blog} />
-                        )}
-                    </div>
-                </div>
-            )}
+            {user && blogList}
         </>
     )
 }

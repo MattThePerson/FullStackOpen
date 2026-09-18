@@ -23,7 +23,7 @@ loginRouter.post("/", async (req, res) => {
     const token = jwt.sign(
         userObj,
         config.SECRET,
-        // { expiresIn: 60*60*24*7 }, // a week because why not
+        { expiresIn: 60*60*24*7 }, // a week because why not
     );
 
     res.json({ token, username });

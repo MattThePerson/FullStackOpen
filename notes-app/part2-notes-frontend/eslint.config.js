@@ -25,18 +25,21 @@ export default [
         },
         rules: {
             ...js.configs.recommended.rules,
-            ...react.configs.recommended.rules,
-            ...react.configs['jsx-runtime'].rules,
             ...reactHooks.configs.recommended.rules,
-            'react/jsx-no-target-blank': 'off',
+            'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
             'react-refresh/only-export-components': [
-                'warn',
-                { allowConstantExport: true },
+            'warn',
+            { allowConstantExport: true }
             ],
-            'react/prop-types': 0,
             indent: ['error', 4],
-            semi: ['error', 'never'],
+            'linebreak-style': ['error', 'unix'],
             quotes: ['error', 'single', { avoidEscape: true }],
+            semi: ['error', 'never'],
+            eqeqeq: 'error',
+            'no-trailing-spaces': 'error',
+            'object-curly-spacing': ['error', 'always'],
+            'arrow-spacing': ['error', { before: true, after: true }],
+            'no-console': 'off',
         },
     },
 ]

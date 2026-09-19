@@ -1,19 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
+
+// components
+import Togglable from './components/Togglable'
+import BlogAdder from './components/BlogAdder'
 import Blog from './components/Blog'
+
+// services
 import blogService from './services/blogs'
 import loginService from './services/login'
 import localStore from './services/localStorage'
 
+/* App */
 const App = () => {
     const [blogs, setBlogs] = useState([])
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
-
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
 
     /* Splash board */
     const [splashMessage, setSplashMessage] = useState(null)
@@ -64,15 +67,19 @@ const App = () => {
         splash.good(`goodbye ${username}`)
     }
 
+    const toggleBlogAdderRef = useRef()
+
     // handle: blog create
-    const handleBlogCreate = async (e) => {
-        e.preventDefault()
+    const handleBlogCreate = async (title, author, url, onSuccess) => {
+        console.log(title, author, url)
         blogService.setAuthToken(user.token)
         const res = await blogService.create(title, author, url)
         if (res.good) {
             const newBlogs = [ ...blogs, res.data ]
             setBlogs(newBlogs)
             splash.good('created new blog', 2000)
+            onSuccess()
+            toggleBlogAdderRef.current.toggleVisibility()
         } else {
             splash.bad(`blog creation failed: ${JSON.stringify(res.data)}`, 4000)
         }
@@ -126,29 +133,9 @@ const App = () => {
                 </button>
             </p>
             {/* blog adder */}
-            <section>
-                <form onSubmit={handleBlogCreate}>
-                    <div>
-                        <label>title
-                            <input onChange={({ target }) => setTitle(target.value)}
-                            ></input>
-                        </label>
-                    </div>
-                    <div>
-                        <label>author
-                            <input onChange={({ target }) => setAuthor(target.value)}
-                            ></input>
-                        </label>
-                    </div>
-                    <div>
-                        <label>url
-                            <input onChange={({ target }) => setUrl(target.value)}
-                            ></input>
-                        </label>
-                    </div>
-                    <button>create</button>
-                </form>
-            </section>
+            <Togglable buttonLabel="create new blog" reff={toggleBlogAdderRef}>
+                <BlogAdder onSubmit={handleBlogCreate} />
+            </Togglable>
             {/* blog list */}
             <section>
                 {blogs.map(blog =>

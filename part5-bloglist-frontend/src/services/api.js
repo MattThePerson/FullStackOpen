@@ -22,6 +22,7 @@ const api = {
     get: (url, config) => request(axios.get(url, config)),
     post: (url, data, config) => request(axios.post(url, data, config)),
     put: (url, data, config) => request(axios.put(url, data, config)),
+    delete: (url, config) => request(axios.delete(url, config)),
 }
 
 export default api

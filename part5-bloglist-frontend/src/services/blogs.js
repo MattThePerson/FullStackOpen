@@ -28,9 +28,17 @@ const update = async ({ id, title, author, url, likes, user }) => {
     return api.put(`${baseUrl}/${id}`, body, config)
 }
 
+const remove = async (id) => {
+    const config = {
+        headers: { Authorization: `Bearer ${authToken}` }
+    }
+    return api.delete(`${baseUrl}/${id}`, config)
+}
+
 export default {
     getAll,
     create,
     update,
+    remove,
     setAuthToken,
 }

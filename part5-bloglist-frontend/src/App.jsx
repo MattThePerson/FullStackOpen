@@ -30,7 +30,7 @@ const App = () => {
             setSplashGood(true)
             splash.set(msg, duration)
         },
-        bad: (msg, duration=3000) => {
+        bad: (msg, duration=5000) => {
             setSplashGood(false)
             splash.set(msg, duration)
         },
@@ -107,6 +107,10 @@ const App = () => {
         }
     }
 
+    const removeBlogFromPage = (id) => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+    }
+
     // COMPONENT: login form
     const loginForm = (
         <form onSubmit={handleLogin}>
@@ -147,7 +151,13 @@ const App = () => {
             {/* blog list */}
             <section>
                 {sortedBlogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} splash={splash} />
+                    <Blog
+                        key={blog.id}
+                        blog={blog}
+                        splash={splash}
+                        removeBlogFromPage={removeBlogFromPage}
+                        currentUser={user}
+                    />
                 )}
             </section>
         </div>

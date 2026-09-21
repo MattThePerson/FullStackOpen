@@ -13,6 +13,7 @@ import localStore from './services/localStorage'
 /* App */
 const App = () => {
     const [blogs, setBlogs] = useState([])
+    const [sortedBlogs, setSortedBlogs] = useState([])
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -47,44 +48,6 @@ const App = () => {
         ),
     }
 
-    // handle: login
-    const handleLogin = async (event) => {
-        event.preventDefault()
-        const res = await loginService.authenticateUser(username, password)
-        if (res.good) {
-            setUser(res.data)
-            localStore.setJson('loggedInUser', res.data)
-            splash.good(`welcome ${username}`)
-        } else {
-            splash.bad('unable to authenticate user')
-        }
-    }
-
-    // handle: logout
-    const handleLogout = () => {
-        setUser(null)
-        localStore.remove('loggedInUser')
-        splash.good(`goodbye ${username}`)
-    }
-
-    const toggleBlogAdderRef = useRef()
-
-    // handle: blog create
-    const handleBlogCreate = async (title, author, url, onSuccess) => {
-        console.log(title, author, url)
-        blogService.setAuthToken(user.token)
-        const res = await blogService.create(title, author, url)
-        if (res.good) {
-            const newBlogs = [ ...blogs, res.data ]
-            setBlogs(newBlogs)
-            splash.good('created new blog', 2000)
-            onSuccess()
-            toggleBlogAdderRef.current.toggleVisibility()
-        } else {
-            splash.bad(`blog creation failed: ${JSON.stringify(res.data)}`, 4000)
-        }
-    }
-
     // get blogs
     useEffect(() => {
         blogService.getAll().then(res => setBlogs(res.data))
@@ -96,8 +59,53 @@ const App = () => {
         if (user) {
             setUser(user)
             setUsername(user.username)
+            blogService.setAuthToken(user.token)
         }
     }, [])
+
+    // sort blogs
+    useEffect(() => {
+        setSortedBlogs(blogs.sort((a, b) => b.likes - a.likes))
+    }, [blogs])
+
+    // handle: login
+    const handleLogin = async (event) => {
+        event.preventDefault()
+        const res = await loginService.authenticateUser(username, password)
+        if (res.good) {
+            setUser(res.data)
+            blogService.setAuthToken(res.data.token)
+            localStore.setJson('loggedInUser', res.data)
+            splash.good(`welcome ${username}`)
+        } else {
+            splash.bad('unable to authenticate user')
+        }
+    }
+
+    // handle: logout
+    const handleLogout = () => {
+        setUser(null)
+        localStore.remove('loggedInUser')
+        blogService.setAuthToken(null)
+        splash.good(`goodbye ${username}`)
+    }
+
+    const toggleBlogAdderRef = useRef()
+
+    // handle: blog create
+    const handleBlogCreate = async (title, author, url, onSuccess) => {
+        console.log(title, author, url)
+        const res = await blogService.create(title, author, url)
+        if (res.good) {
+            const newBlogs = [ ...blogs, res.data ]
+            setBlogs(newBlogs)
+            splash.good('created new blog', 2000)
+            onSuccess()
+            toggleBlogAdderRef.current.toggleVisibility()
+        } else {
+            splash.bad(`blog creation failed: ${JSON.stringify(res.data)}`, 4000)
+        }
+    }
 
     // COMPONENT: login form
     const loginForm = (
@@ -138,8 +146,8 @@ const App = () => {
             </Togglable>
             {/* blog list */}
             <section>
-                {blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} />
+                {sortedBlogs.map(blog =>
+                    <Blog key={blog.id} blog={blog} splash={splash} />
                 )}
             </section>
         </div>

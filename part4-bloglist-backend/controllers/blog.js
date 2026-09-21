@@ -60,9 +60,10 @@ blogsRouter.post("/", userAuthorize, async (req, res) => {
     const user = await User.findById(req.user.id);
     blog.user = user._id;
     user.blogs = user.blogs.concat(blog._id);
-    const result = await blog.save();
+    const savedBlog = await blog.save();
     await user.save();
-    res.status(201).json(result);
+    savedBlog.user = await User.findById(blog.user);
+    res.status(201).json(savedBlog);
 });
 
 // PUT

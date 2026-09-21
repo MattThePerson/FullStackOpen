@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, splash }) => {
 
     const [viewDetails, setViewDetails] = useState(false)
     const [blogStateful, setBlog] = useState(blog)
@@ -17,17 +17,22 @@ const Blog = ({ blog }) => {
     }
 
     const addLike = async () => {
-        const data = { ...blog }
+        const data = { ...blogStateful }
         data.user = data.user.id
         data.likes += 1
         console.log('sending put with increased like')
         const res = await blogService.update(data)
         if (res.good) {
-            console.log('gucci!')
+            splash.good(`updated likes count to: ${data.likes}`)
+            res.data.user = blog.user
             setBlog(res.data)
         } else {
-            console.log('oh fuck')
+            splash.bad(`unable to update likes: status=${res.status}: ${JSON.stringify(res.data)}`)
         }
+    }
+
+    if (!blog.user) {
+        return <div>Blog missing user: {JSON.stringify(blog)}</div>
     }
 
     return (

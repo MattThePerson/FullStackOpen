@@ -20,8 +20,17 @@ const create = async (title, author, url) => {
     return api.post(baseUrl, body, config)
 }
 
+const update = async ({ id, title, author, url, likes, user }) => {
+    const config = {
+        headers: { Authorization: `Bearer ${authToken}` }
+    }
+    const body = { title, author, url, likes, user }
+    return api.put(`${baseUrl}/${id}`, body, config)
+}
+
 export default {
     getAll,
     create,
+    update,
     setAuthToken,
 }

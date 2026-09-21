@@ -66,8 +66,8 @@ blogsRouter.post("/", userAuthorize, async (req, res) => {
 });
 
 // PUT
-blogsRouter.put("/:id", async (req, res) => {
-    const { title, author, url, likes } = req.body;
+blogsRouter.put("/:id", userAuthorize, async (req, res) => {
+    const { title, author, url, likes, user } = req.body;
     const id = req.params.id;
     const blog = await Blog.findById(id);
     if (!blog) {
@@ -77,6 +77,7 @@ blogsRouter.put("/:id", async (req, res) => {
     blog.author = author;
     blog.url = url;
     blog.likes = likes;
+    blog.user = user;
     const upBlog = await blog.save();
     res.json(upBlog);
 });

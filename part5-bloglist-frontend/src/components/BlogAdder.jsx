@@ -2,48 +2,48 @@ import { useState } from 'react'
 
 const BlogAdder = ({ onSubmit }) => {
 
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        onSubmit(title, author, url, () => {
-            setTitle('')
-            setAuthor('')
-            setUrl('')
-        })
-    }
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    onSubmit(title, author, url, () => {
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    })
+  }
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>title
-                    <input
-                        value={title}
-                        onChange={({ target }) => setTitle(target.value)}
-                    ></input>
-                </label>
-            </div>
-            <div>
-                <label>author
-                    <input
-                        value={author}
-                        onChange={({ target }) => setAuthor(target.value)}
-                    ></input>
-                </label>
-            </div>
-            <div>
-                <label>url
-                    <input
-                        value={url}
-                        onChange={({ target }) => setUrl(target.value)}
-                    ></input>
-                </label>
-            </div>
-            <button>create</button>
-        </form>
-    )
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>title
+          <input
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          ></input>
+        </label>
+      </div>
+      <div>
+        <label>author
+          <input
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          ></input>
+        </label>
+      </div>
+      <div>
+        <label>url
+          <input
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          ></input>
+        </label>
+      </div>
+      <button>create</button>
+    </form>
+  )
 }
 
 export default BlogAdder

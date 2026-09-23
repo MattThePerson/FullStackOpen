@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, splash, removeBlogFromPage, currentUser }) => {
+const Blog = ({ blog, handleLikeBlog, splash, removeBlogFromPage, currentUser }) => {
 
   const [viewDetails, setViewDetails] = useState(false)
   const [blogStateful, setBlog] = useState(blog)
@@ -9,7 +9,7 @@ const Blog = ({ blog, splash, removeBlogFromPage, currentUser }) => {
   const toggleViewDetails = () => setViewDetails(!viewDetails)
 
   const detailsHiddenStyle = { display: viewDetails ? 'none' : 'block' }
-  const detailsShownStyle =  { display: viewDetails ? 'block' : 'none' }
+  const detailsShownStyle = { display: viewDetails ? 'block' : 'none' }
 
   const uploadedByCurrentUser = currentUser.username === blog.user.username
 
@@ -18,21 +18,7 @@ const Blog = ({ blog, splash, removeBlogFromPage, currentUser }) => {
     width: '25rem',
   }
 
-  const addLike = async () => {
-    const data = { ...blogStateful }
-    data.user = data.user.id
-    data.likes += 1
-    console.log('sending put with increased like')
-    const res = await blogService.update(data)
-    if (res.good) {
-      splash.good(`updated likes count to: ${data.likes}`)
-      res.data.user = blog.user
-      setBlog(res.data)
-    } else {
-      splash.bad(`unable to update likes: status=${res.status}: ${JSON.stringify(res.data)}`)
-    }
-  }
-
+  // should probably exist in App.jsx
   const handleDelete = async () => {
     if (window.confirm(`delete blog with title: "${blog.title}"`)) {
       console.log('deleting blog with id:', blog.id)
@@ -63,11 +49,11 @@ const Blog = ({ blog, splash, removeBlogFromPage, currentUser }) => {
         <div>
           {blogStateful.likes}
           <button
-            onClick={addLike}
+            onClick={() => handleLikeBlog(blog.id)}
           >like</button>
         </div>
         <div>{blog.user.username}</div>
-        {uploadedByCurrentUser && <div><button style={{background: 'blue'}} onClick={handleDelete} >delete</button></div>}
+        {uploadedByCurrentUser && <div><button style={{ background: 'blue' }} onClick={handleDelete} >delete</button></div>}
       </div>
 
     </div>

@@ -32,5 +32,13 @@ export default [
       semi: ['error', 'never'],
       quotes: ['error', 'single', { avoidEscape: true }],
     }
-  }
+  },
+  {
+    files: ['**/*.test.{js,jsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.vitest
+      }
+    }
+  },
 ]

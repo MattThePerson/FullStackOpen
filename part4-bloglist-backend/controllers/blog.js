@@ -97,4 +97,11 @@ blogsRouter.delete("/:id", userAuthorize, async (req, res) => {
     res.status(204).end();
 });
 
+// POST (test)
+blogsRouter.post("/testauth", userAuthorize, async (req, res) => {
+    res.json({
+        message: "Authorization valid"
+    });
+});
+
 module.exports = blogsRouter;

@@ -19,7 +19,7 @@ const BlogAdder = ({ onSubmit }) => {
     <form onSubmit={handleSubmit}>
       <div>
         <label>title
-          <input
+          <input className="title-input"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           ></input>
@@ -27,7 +27,7 @@ const BlogAdder = ({ onSubmit }) => {
       </div>
       <div>
         <label>author
-          <input
+          <input className="author-input"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           ></input>
@@ -35,7 +35,7 @@ const BlogAdder = ({ onSubmit }) => {
       </div>
       <div>
         <label>url
-          <input
+          <input className="url-input"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
           ></input>

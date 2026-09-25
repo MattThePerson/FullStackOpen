@@ -11,7 +11,7 @@ const Blog = ({ blog, handleLikeBlog, splash, removeBlogFromPage, currentUser })
   const detailsHiddenStyle = { display: viewDetails ? 'none' : 'block' }
   const detailsShownStyle = { display: viewDetails ? 'block' : 'none' }
 
-  const uploadedByCurrentUser = currentUser.username === blog.user.username
+  const uploadedByCurrentUser = blog.user && currentUser.username === blog.user.username
 
   const blogItemStyle = {
     border: '1px solid black',

@@ -142,14 +142,14 @@ const App = () => {
       <h2>Log in</h2>
       <div>
         <label>username
-          <input
+          <input aria-label='Username'
             onChange={({ target }) => setUsername(target.value)}
           ></input>
         </label>
       </div>
       <div>
         <label>password
-          <input
+          <input aria-label='Password'
             type="password"
             onChange={({ target }) => setPassword(target.value)}
           ></input>

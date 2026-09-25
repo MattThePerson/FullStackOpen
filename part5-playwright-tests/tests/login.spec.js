@@ -94,6 +94,51 @@ describe("Blog app", () => {
       await expect(page.getByRole("button", { name: "delete" })).not.toBeVisible()
     })
 
+    test("blogs sorted by likes", async ({ page }) => {
+      // 1. add 3 blogs
+      // await page.pause()
+      const blogs = [
+        { title: "Blog 1", author: "Mr. Smith", url: "https://blog.com/mr-smith" },
+        { title: "Blog 2", author: "Mrs. Smith", url: "https://blog.com/mrs-smith" },
+        { title: "Blog 3", author: "Ms. Smith", url: "https://blog.com/ms-smith" },
+      ]
+      // add blogs
+      for (let blog of blogs) {
+        await helper.handlePostBlog(page, blog.title, blog.author, blog.url)
+      }
+      // expand all blogs
+      while (await page.getByRole("button", { name: "view" }).count() > 0) {
+        await page.getByRole("button", { name: "view" }).first().click()
+      }
+      // 2. like blogs differing amounts
+      // await page.pause()
+      for (let i = 0; i < 12; i++) {
+        const likeButtons = page.getByRole("button", { name: "like" })
+        const count = await likeButtons.count()
+        if (count === 0) break // nothing likeable, bail out
+        const nth = Math.floor(Math.random() * count)
+        await likeButtons.nth(nth).click()
+        await page.waitForTimeout(100)
+      }
+      // 3. reload page and expand blogs
+      // await page.pause()
+      await page.goto("/")
+      await page.waitForLoadState('networkidle')
+      while (await page.getByRole("button", { name: "view" }).count() > 0) {
+        await page.getByRole("button", { name: "view" }).first().click()
+      }
+      await expect(page.getByRole("button", { name: "view" })).toHaveCount(0)
+      await expect(page.getByLabel("likes").first()).toBeVisible()
+      // 4. enure likes in order
+      const likesElements = await page.getByLabel("likes").all()
+      const likesText = await Promise.all(likesElements.map(el => el.textContent()))
+      const likes = likesText.map(el => Number(el))
+      const likesSorted = [...likes].sort((a, b) => b - a)
+      // console.log(likes)
+      // await page.pause()
+      expect(likes).toEqual(likesSorted)
+    })
+
   }) // Describe: When logged int
 }) // Describe: Blog app
 

@@ -13,7 +13,7 @@ import localStore from './services/localStorage'
 /* App */
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [sortedBlogs, setSortedBlogs] = useState([])
+  // const [sortedBlogs, setSortedBlogs] = useState([])
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -50,7 +50,10 @@ const App = () => {
 
   // get blogs
   useEffect(() => {
-    blogService.getAll().then(res => setBlogs(res.data))
+    blogService.getAll().then(res => {
+      const sortedBlogs = [...res.data].sort((a, b) => b.likes - a.likes)
+      setBlogs(sortedBlogs)
+    })
   }, [])
 
   // logged in user
@@ -64,9 +67,9 @@ const App = () => {
   }, [])
 
   // sort blogs
-  useEffect(() => {
-    setSortedBlogs(blogs.sort((a, b) => b.likes - a.likes))
-  }, [blogs])
+  // useEffect(() => {
+  //   setSortedBlogs([...blogs].sort((a, b) => b.likes - a.likes))
+  // }, [])
 
   // handle: login
   const handleLogin = async (event) => {
@@ -175,7 +178,7 @@ const App = () => {
       </Togglable>
       {/* blog list */}
       <section>
-        {sortedBlogs.map(blog =>
+        {blogs.map(blog =>
           <Blog
             key={blog.id}
             blog={blog}

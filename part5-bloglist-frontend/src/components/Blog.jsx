@@ -47,7 +47,9 @@ const Blog = ({ blog, handleLikeBlog, splash, removeBlogFromPage, currentUser })
       <div style={detailsShownStyle}>
         <div>{blog.url}</div>
         <div>
-          {blogStateful.likes}
+          <div aria-label="Likes">
+            {blogStateful.likes}
+          </div>
           <button
             onClick={() => handleLikeBlog(blog.id)}
           >like</button>
